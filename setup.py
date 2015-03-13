@@ -30,9 +30,8 @@ class SQLiteTest(Command):
         if self.distribution.tests_require:
             self.distribution.fetch_build_eggs(self.distribution.tests_require)
 
-        from trytond.config import CONFIG
-        CONFIG['db_type'] = 'sqlite'
         os.environ['DB_NAME'] = ':memory:'
+        os.environ['TRYTOND_DATABASE_URI'] = 'sqlite://'
 
         from tests import suite
         test_result = unittest.TextTestRunner(verbosity=3).run(suite())
@@ -60,13 +59,8 @@ class PostgresTest(Command):
         if self.distribution.tests_require:
             self.distribution.fetch_build_eggs(self.distribution.tests_require)
 
-        from trytond.config import CONFIG
-        CONFIG['db_type'] = 'postgresql'
-        CONFIG['db_host'] = 'localhost'
-        CONFIG['db_port'] = 5432
-        CONFIG['db_user'] = 'postgres'
-
         os.environ['DB_NAME'] = 'test_' + str(int(time.time()))
+        os.environ['TRYTOND_DATABASE_URI'] = 'postgresql://'
 
         from tests import suite
         test_result = unittest.TextTestRunner(verbosity=3).run(suite())
